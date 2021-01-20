@@ -1,0 +1,107 @@
+//code of Home.vue while testing out composition api
+
+<template>
+  <div class="home">
+    <h1>refs</h1>
+    <p ref="myRef">name is {{ name }} and age is {{ age }}</p>
+    <button v-on:click="handleClick">click</button>
+    <button v-on:click="age++">add 1 to age</button>
+    <input type="text" v-model="name">
+
+    <h1>reactive</h1>
+    <p>name:{{ reactive1.name }} and age: {{ reactive1.age }}</p>
+    <button v-on:click="updateReactive">update reactive</button>
+
+    <h1>computed</h1>
+    <p>{{ nameComputed }}</p>
+    <input v-model="searchTerm">
+    <p>{{ searchTerm }}</p>
+    <div v-for="name in matchingNames" v-bind:key="name">
+      {{ name }}
+    </div>
+
+    <button v-on:click="handleStopWatch">stop watching</button>
+  </div>
+</template>
+
+<script>
+import { ref, reactive, computed, watch, watchEffect } from 'vue'
+
+export default {
+  name: 'Home',
+  //composition api
+  setup(){
+    console.log('setup')
+
+    const nameVar = ref('adnan')
+    const ageVar = ref(22)
+
+    const ref1 = ref({ name: 'name1', age: 1 })
+    const reactive1 = reactive({ name: 'name2', age: 2 })
+
+    const handleClick = () => {
+      //console.log('clicked')
+      //console.log(myRef, myRef.value)
+      //myRef.value.classList.add('test')
+      //myRef.value.textContent = 'hello'
+
+      nameVar.value = 'new name'
+      ageVar.value = 21
+    }
+
+    const updateRef = () => {
+      ref1.value.age = 99
+    }
+    const updateReactive = () => {
+      reactive1.age = 99
+    }
+
+    const myRef = ref(null);
+
+    const nameComputed = computed(() => {
+      return 'adnan1'
+    })
+
+    const names = ref(['name1', 'name2', 'name3'])
+
+    const searchTerm = ref('')
+
+    const stopWatch = watch(searchTerm, () => {
+      console.log('watch')
+    })
+    const stopEffect = watchEffect(() => {
+      console.log('watcheffect', searchTerm.value)
+    })
+    const handleStopWatch = () => {
+      stopWatch()
+      stopEffect()
+    }
+
+    const matchingNames = computed(() => {
+      return names.value.filter((name)=> name.includes(searchTerm.value))
+    })
+
+    return{
+      name: nameVar,
+      age: ageVar,
+      handleClick,
+      myRef,
+      ref1,
+      reactive1,
+      updateRef,
+      updateReactive,
+      nameComputed,
+      names,
+      searchTerm,
+      matchingNames,
+      handleStopWatch
+    }
+  },
+  mounted(){
+    console.log('mounted')
+  },
+  created(){
+    console.log('created')
+  }
+}
+</script>
